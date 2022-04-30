@@ -30,17 +30,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        viewModel.error.observe(this) {
-            if (it) {
+        viewModel.state.observe(this) {
+            if (it.isError) {
                 Toast.makeText(this@MainActivity, "Input data is empty", Toast.LENGTH_SHORT).show()
+                return@observe
             }
-        }
-        viewModel.progress.observe(this) {
-            binding.progressBarLoading.progress = it
-            binding.btnCalculate.isEnabled = it >= value
-        }
-        viewModel.factorial.observe(this) {
-            binding.tvFactorial.text = it
+            binding.progressBarLoading.progress = it.progress
+            binding.btnCalculate.isEnabled = it.progress >= value
+            binding.tvFactorial.text = it.factorial
         }
     }
 }

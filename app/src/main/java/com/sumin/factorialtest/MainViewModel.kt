@@ -8,31 +8,23 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
-    private val _error = MutableLiveData<Boolean>()
-    val error: LiveData<Boolean>
-        get() = _error
-
-    private val _progress = MutableLiveData<Int>()
-    val progress: LiveData<Int>
-        get() = _progress
-
-    private val _factorial = MutableLiveData<String>()
-    val factorial: LiveData<String>
-        get() = _factorial
+    private val _state = MutableLiveData<State>()
+    val state: LiveData<State>
+        get() = _state
 
     fun calculate(value: String?) {
-        _progress.value = 0
+        _state.value = State()
         if (value.isNullOrBlank()) {
-            _error.value = true
+            _state.value = State(isError = false)
             return
         }
         viewModelScope.launch {
             val number = value.toLong()
             for (i in 1..number) {
-                _progress.value = i.toInt()
+                _state.value = State(progress = i.toInt())
                 delay(20)
             }
-            _factorial.value = "100"
+            _state.value = _state.value?.copy(factorial = "300")
         }
     }
 }
