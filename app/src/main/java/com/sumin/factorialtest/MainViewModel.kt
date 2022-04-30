@@ -8,8 +8,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
-import kotlin.concurrent.thread
-import kotlin.coroutines.suspendCoroutine
 
 class MainViewModel : ViewModel() {
     private val _state = MutableLiveData<State>()
