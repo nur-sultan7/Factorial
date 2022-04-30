@@ -29,7 +29,7 @@ class MainViewModel : ViewModel() {
     private suspend fun getFactorial(value: Long): String {
         return suspendCoroutine {
             thread {
-                var resultString = ""
+                var resultString = "Unknown"
                 var result = BigInteger.ONE
                 val percentOfValue = value / 10
                 var progressTrigger = percentOfValue
