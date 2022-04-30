@@ -4,8 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.math.BigInteger
+import kotlin.concurrent.thread
+import kotlin.coroutines.suspendCoroutine
 
 class MainViewModel : ViewModel() {
     private val _state = MutableLiveData<State>()
@@ -19,12 +21,29 @@ class MainViewModel : ViewModel() {
             return
         }
         viewModelScope.launch {
-            val number = value.toLong()
-            for (i in 1..number) {
-                _state.value = Progress(i.toInt())
-                delay(20)
+            val factorial = getFactorial(value.toLong())
+            _state.value = Factorial(factorial)
+        }
+    }
+
+    private suspend fun getFactorial(value: Long): String {
+        return suspendCoroutine {
+            thread {
+                var resultString = ""
+                var result = BigInteger.ONE
+                val percentOfValue = value / 10
+                var progressTrigger = percentOfValue
+                for (i in 1..value) {
+                    result = result.multiply(BigInteger.valueOf(i))
+                    if (i == progressTrigger) {
+                        if (i == value)
+                            resultString = result.toString()
+                        _state.postValue(Progress(i.toInt()))
+                        progressTrigger += percentOfValue
+                    }
+                }
+                it.resumeWith(Result.success(resultString))
             }
-            _state.value = Result("300")
         }
     }
 }

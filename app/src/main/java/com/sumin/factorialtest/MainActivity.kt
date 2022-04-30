@@ -40,8 +40,8 @@ class MainActivity : AppCompatActivity() {
                     binding.progressBarLoading.progress = it.value
                     binding.btnCalculate.isEnabled = it.value >= value
                 }
-                is Result -> {
-                    binding.tvFactorial.text = it.factorial
+                is Factorial -> {
+                    binding.tvFactorial.text = it.value
                 }
             }
         }
