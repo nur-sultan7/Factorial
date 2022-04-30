@@ -13,18 +13,18 @@ class MainViewModel : ViewModel() {
         get() = _state
 
     fun calculate(value: String?) {
-        _state.value = State()
+        _state.value = Progress(0)
         if (value.isNullOrBlank()) {
-            _state.value = State(isError = false)
+            _state.value = Error
             return
         }
         viewModelScope.launch {
             val number = value.toLong()
             for (i in 1..number) {
-                _state.value = State(progress = i.toInt())
+                _state.value = Progress(i.toInt())
                 delay(20)
             }
-            _state.value = _state.value?.copy(factorial = "300")
+            _state.value = Result("300")
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.sumin.factorialtest
 
-data class State(
-    val isError: Boolean = false,
-    val progress: Int = 0,
-    val factorial: String = ""
-)
+sealed class State
+object Error : State()
+class Progress(val value: Int) : State()
+class Result(val factorial: String) : State()
