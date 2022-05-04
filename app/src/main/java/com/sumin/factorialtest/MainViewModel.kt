@@ -44,7 +44,6 @@ class MainViewModel : ViewModel() {
             resultString
         }
     }
-
 //    private suspend fun getFactorial(value: Long): String {
 //        return suspendCoroutine {
 //            thread {
