@@ -6,11 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import java.math.BigInteger
-import kotlin.math.floor
 
 class MainViewModel : ViewModel() {
     private val coroutineScope =
-        CoroutineScope(Dispatchers.Main + CoroutineName("My coroutine scope"))
+        CoroutineScope(
+            Dispatchers.Default
+                    + CoroutineName("Factorial scope")
+        )
     private val _state = MutableLiveData<State>()
     val state: LiveData<State>
         get() = _state
@@ -22,9 +24,7 @@ class MainViewModel : ViewModel() {
             return
         }
         val scope = coroutineScope.async {
-            withContext(Dispatchers.Default) {
-                getFactorial(value.toLong())
-            }
+            getFactorial(value.toLong())
         }
         viewModelScope.launch {
             _state.value = Factorial(scope.await())
@@ -34,17 +34,16 @@ class MainViewModel : ViewModel() {
     private fun getFactorial(value: Long): String {
         var resultString = "Unknown"
         var result = BigInteger.ONE
-        val percentOfValue = value / 10f
-        var progressTrigger = percentOfValue
+        var lastUpdate = 0
         for (i in 1..value) {
             result = result.multiply(BigInteger.valueOf(i))
             if (i == value) {
                 resultString = result.toString()
             }
-            if (i >= progressTrigger) {
-                _state.postValue(Progress(i.toInt()))
-                progressTrigger += percentOfValue
-                progressTrigger = floor(progressTrigger * 10) / 10f
+            val currentProgress = (i / value.toFloat() * 100).toInt()
+            if (currentProgress > lastUpdate) {
+                lastUpdate = currentProgress
+                _state.postValue(Progress(currentProgress))
             }
         }
         return resultString

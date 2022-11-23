@@ -15,7 +15,6 @@ class MainActivity : AppCompatActivity() {
     private val viewModel by lazy {
         ViewModelProvider(this)[MainViewModel::class.java]
     }
-    private var value: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,8 +22,9 @@ class MainActivity : AppCompatActivity() {
         observeViewModel()
         binding.btnCalculate.setOnClickListener {
             val valueString = binding.editTextNumber.text.toString()
-            value = valueString.toLong()
-            binding.progressBarLoading.max = value.toInt()
+            binding.tvFactorial.text = null
+            binding.btnCalculate.isEnabled = false
+            binding.progressBarLoading.max = 100
             viewModel.calculate(valueString)
         }
     }
@@ -38,10 +38,11 @@ class MainActivity : AppCompatActivity() {
                 }
                 is Progress -> {
                     binding.progressBarLoading.progress = it.value
-                    binding.btnCalculate.isEnabled = it.value >= value
+
                 }
                 is Factorial -> {
                     binding.tvFactorial.text = it.value
+                    binding.btnCalculate.isEnabled = true
                 }
             }
         }
